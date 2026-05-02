@@ -1,18 +1,14 @@
 const axios = require("axios");
 const Log = require("../logging_middleware/logger");
 
-// ✅ PUT YOUR TOKEN HERE (same one from Postman)
 const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJhazUyMTRAc3JtaXN0LmVkdS5pbiIsImV4cCI6MTc3NzcwMTY3MywiaWF0IjoxNzc3NzAwNzczLCJpc3MiOiJBZmZvcmQgTWVkaWNhbCBUZWNobm9sb2dpZXMgUHJpdmF0ZSBMaW1pdGVkIiwianRpIjoiMGUxNmZjNjEtYTc2OS00ZTlhLTgzZWEtMDE2ZTgxODM3NzcxIiwibG9jYWxlIjoiZW4tSU4iLCJuYW1lIjoiYW5pa2Ega2hhanVyaWEiLCJzdWIiOiI1NjI1N2NhMy04ZmQ3LTQwZWUtYjk0ZC02ZDZjMzRkNzUzYWMifSwiZW1haWwiOiJhazUyMTRAc3JtaXN0LmVkdS5pbiIsIm5hbWUiOiJhbmlrYSBraGFqdXJpYSIsInJvbGxObyI6InJhMjMxMTAwMzAxMTczNiIsImFjY2Vzc0NvZGUiOiJRa2JweEgiLCJjbGllbnRJRCI6IjU2MjU3Y2EzLThmZDctNDBlZS1iOTRkLTZkNmMzNGQ3NTNhYyIsImNsaWVudFNlY3JldCI6IkVrTXhDc1RZSm1ZVUZKZnIifQ.cchNb_lvQ42tf6biqkCduw5VrCH86WZV_G5fzcocwko";
 
-// ✅ Headers for protected APIs
 const headers = {
     Authorization: `Bearer ${TOKEN}`,
     "Content-Type": "application/json"
 };
 
-// -------------------------------
-// 🧠 Knapsack Algorithm
-// -------------------------------
+
 function knapsack(tasks, capacity) {
     const n = tasks.length;
     const dp = Array(n + 1).fill().map(() => Array(capacity + 1).fill(0));
@@ -36,9 +32,6 @@ function knapsack(tasks, capacity) {
     return dp[n][capacity];
 }
 
-// -------------------------------
-// 🚀 Main Function
-// -------------------------------
 async function run() {
     try {
         await Log("backend", "info", "handler", "Fetching depots");
