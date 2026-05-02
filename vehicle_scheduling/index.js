@@ -8,72 +8,40 @@ const headers = {
     "Content-Type": "application/json"
 };
 
-
 function knapsack(tasks, capacity) {
-    const n = tasks.length;
-    const dp = Array(n + 1).fill().map(() => Array(capacity + 1).fill(0));
+    const dp = Array(capacity + 1).fill(0);
 
-    for (let i = 1; i <= n; i++) {
-        let wt = tasks[i - 1].Duration;
-        let val = tasks[i - 1].Impact;
+    for (let task of tasks) {
+        const wt = task.Duration;
+        const val = task.Impact;
 
-        for (let w = 0; w <= capacity; w++) {
-            if (wt <= w) {
-                dp[i][w] = Math.max(
-                    dp[i - 1][w],
-                    val + dp[i - 1][w - wt]
-                );
-            } else {
-                dp[i][w] = dp[i - 1][w];
-            }
+        for (let w = capacity; w >= wt; w--) {
+            dp[w] = Math.max(dp[w], val + dp[w - wt]);
         }
     }
 
-    return dp[n][capacity];
+    return dp[capacity];
 }
 
 async function run() {
     try {
-        await Log("backend", "info", "handler", "Fetching depots");
+        await Log("backend", "info", "handler", "Fetching data");
 
-        const depotsRes = await axios.get(
-            "http://20.207.122.201/evaluation-service/depots",
-            { headers }
-        );
-
-        await Log("backend", "info", "handler", "Depots fetched");
-
-        const vehiclesRes = await axios.get(
-            "http://20.207.122.201/evaluation-service/vehicles",
-            { headers }
-        );
-
-        await Log("backend", "info", "handler", "Vehicles fetched");
+        const [depotsRes, vehiclesRes] = await Promise.all([
+            axios.get("http://20.207.122.201/evaluation-service/depots", { headers }),
+            axios.get("http://20.207.122.201/evaluation-service/vehicles", { headers })
+        ]);
 
         const depots = depotsRes.data.depots;
         const tasks = vehiclesRes.data.vehicles;
 
         for (let depot of depots) {
-            await Log(
-                "backend",
-                "info",
-                "handler",
-                `Processing depot ${depot.ID}`
-            );
-
             const maxImpact = knapsack(tasks, depot.MechanicHours);
-
             console.log(`Depot ${depot.ID} → Max Impact: ${maxImpact}`);
         }
 
     } catch (err) {
-        await Log(
-            "backend",
-            "error",
-            "handler",
-            err.message
-        );
-
+        await Log("backend", "error", "handler", err.message);
         console.log("Error:", err.response?.data || err.message);
     }
 }
